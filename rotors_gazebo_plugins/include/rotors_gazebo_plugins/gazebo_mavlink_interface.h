@@ -38,8 +38,28 @@
 #include "rotors_gazebo_plugins/common.h"
 #include <mavros_msgs/mavlink_convert.h>
 
+#include "hil_control.pb.h"
+#include "hil_sensor.pb.h"
+#include <boost/bind.hpp>
+
+#include <iostream>
+#include <math.h>
+#include <deque>
+#include <sdf/sdf.hh>
+
+#include "gazebo/gazebo.hh"
+#include "gazebo/math/Vector3.hh"
+#include "gazebo/transport/transport.hh"
+#include "gazebo/msgs/msgs.hh"
+
+
+
 namespace gazebo {
 
+typedef const boost::shared_ptr
+    <const sitl_mavlink_msgs::msgs::HilControl>   HilControlPtr;
+typedef const boost::shared_ptr
+    <const sitl_mavlink_msgs::msgs::HilSensor>   HilSensorPtr;
 // Default values
 static const std::string kDefaultNamespace = "";
 
@@ -94,6 +114,7 @@ class GazeboMavlinkInterface : public ModelPlugin {
   void QueueThread();
   void CommandMotorMavros(const mav_msgs::CommandMotorSpeedPtr& input_reference_msg);
   void MavlinkControlCallback(const mavros_msgs::Mavlink::ConstPtr &rmsg);
+  void ProtoControlCallback(const HilControlPtr &pmsg);
   void ImuCallback(const sensor_msgs::ImuConstPtr& imu_msg);
 
 
@@ -117,7 +138,15 @@ class GazeboMavlinkInterface : public ModelPlugin {
 
   math::Vector3 gravity_W_;
   math::Vector3 velocity_prev_W_;
-  math::Vector3 mag_W_; 
+  math::Vector3 mag_W_;
+
+  
+  transport::NodePtr node;
+  transport::PublisherPtr sensorPub;
+  transport::SubscriberPtr commandSubscriber;
+  HilControlPtr l;
+  HilSensorPtr m;
+
 };
 }
 

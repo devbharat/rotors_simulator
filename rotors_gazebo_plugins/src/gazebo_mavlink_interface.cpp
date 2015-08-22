@@ -37,6 +37,12 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
 
   world_ = model_->GetWorld();
 
+  
+  node = transport::NodePtr(new transport::Node());
+  node->Init(world_->GetName());
+  //commandSubscriber = node->Subscribe("command", &GazeboMavlinkInterface::ProtoControlCallback, this);
+  // sensorPub = node->Advertise<sitl_mavlink_msgs::msgs::HilSensor>("~/hil_sensor/data");
+
   namespace_.clear();
 
   if (_sdf->HasElement("robotNamespace"))
@@ -152,6 +158,39 @@ void GazeboMavlinkInterface::CommandMotorMavros(const mav_msgs::CommandMotorSpee
   received_first_referenc_ = true;
 }
 
+/*
+// Get controls data from subscribed protobuf hilcontrols message
+void GazeboMavlinkInterface::ProtoControlCallback(const HilControlPtr &pmsg) {
+  std::cout << "Received message" << std::endl;
+  std::cout << "Control Data" <<
+                     pmsg->roll_ailerons() <<
+                     pmsg->pitch_elevator() <<
+                     pmsg->yaw_rudder() <<
+                     pmsg->throttle() << std::endl;
+
+  inputs.control[0] =(double)pmsg->roll_ailerons();
+  inputs.control[1] =(double)pmsg->pitch_elevator();
+  inputs.control[2] =(double)pmsg->yaw_rudder();
+  inputs.control[3] =(double)pmsg->throttle();
+  inputs.control[4] =(double)pmsg->aux1();
+  inputs.control[5] =(double)pmsg->aux2();
+  inputs.control[6] =(double)pmsg->aux3();
+  inputs.control[7] =(double)pmsg->aux4();
+
+  // publish message
+  double scaling = 150;
+  double offset = 600;
+
+  mav_msgs::CommandMotorSpeedPtr turning_velocities_msg(new mav_msgs::CommandMotorSpeed);
+
+  for (int i = 0; i < _rotor_count; i++) {
+    turning_velocities_msg->motor_speed.push_back(inputs.control[i] * scaling + offset);
+  }
+
+  CommandMotorMavros(turning_velocities_msg);
+  turning_velocities_msg.reset();
+}
+*/
 
 void GazeboMavlinkInterface::MavlinkControlCallback(const mavros_msgs::Mavlink::ConstPtr &rmsg) {
   mavlink_message_t mmsg;
@@ -229,6 +268,28 @@ void GazeboMavlinkInterface::ImuCallback(const sensor_msgs::ImuConstPtr& imu_mes
   mavros_msgs::mavlink::convert(*msg, *rmsg);
 
   hil_sensor_pub_.publish(rmsg);
+
+  /*
+  // send protobuf sensor packet
+  protobuf_hil_sensor.set_time_usec(imu_message->header.stamp.nsec*1000);
+  protobuf_hil_sensor.set_xacc(imu_message->linear_acceleration.x);
+  protobuf_hil_sensor.set_yacc(imu_message->linear_acceleration.y);
+  protobuf_hil_sensor.set_zacc(imu_message->linear_acceleration.z);
+  protobuf_hil_sensor.set_xgyro(imu_message->angular_velocity.x);
+  protobuf_hil_sensor.set_ygyro(imu_message->angular_velocity.y);
+  protobuf_hil_sensor.set_zgyro(imu_message->angular_velocity.z);
+  protobuf_hil_sensor.set_xmag(mag_I.x);
+  protobuf_hil_sensor.set_ymag(mag_I.y);
+  protobuf_hil_sensor.set_zmag(mag_I.z);
+  protobuf_hil_sensor.set_abs_pressure(0.0);
+  protobuf_hil_sensor.set_diff_pressure(0.0);
+  protobuf_hil_sensor.set_pressure_alt(pos_W_I.z);
+  protobuf_hil_sensor.set_temperature(0.0);
+  protobuf_hil_sensor.set_fields_updated(4095);  // 0b1111111111111 (All updated since new data with new noise added always)
+
+  sensorPub->Publish(protobuf_hil_sensor);
+  gazebo::transport::fini();
+  */
 }
 
 GZ_REGISTER_MODEL_PLUGIN(GazeboMavlinkInterface);

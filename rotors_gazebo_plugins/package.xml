@@ -33,6 +33,9 @@
   <build_depend>glog_catkin</build_depend>
 
   <!-- Dependencies needed after this package is compiled. -->
+  <run_depend>gazebo</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_msgs</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rosbag</run_depend>
   <run_depend>tf</run_depend>
