@@ -37,6 +37,10 @@
 #include <stdio.h>
 
 #include "rotors_gazebo_plugins/common.h"
+#include <iostream>
+#include <math.h>
+#include <deque>
+#include <random>
 #include <mavros_msgs/mavlink_convert.h>
 
 namespace gazebo {
@@ -119,6 +123,10 @@ class GazeboMavlinkInterface : public ModelPlugin {
   math::Vector3 gravity_W_;
   math::Vector3 velocity_prev_W_;
   math::Vector3 mag_W_; 
+
+
+  std::default_random_engine random_generator_;
+  std::normal_distribution<float> standard_normal_distribution_;
 };
 }
 

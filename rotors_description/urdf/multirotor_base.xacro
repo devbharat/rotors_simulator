@@ -82,7 +82,7 @@
         <rotorVelocitySlowdownSim>${rotor_velocity_slowdown_sim}</rotorVelocitySlowdownSim>
       </plugin>
     </gazebo>
-    <gazebo reference="${robot_namespace}/base_link_inertia">
+    <gazebo reference="${robot_namespace}/base_link">
       <material>Gazebo/${color}</material>
     </gazebo>
   </xacro:macro>

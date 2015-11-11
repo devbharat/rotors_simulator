@@ -76,8 +76,8 @@
     motor_number="0"
     rotor_drag_coefficient="${rotor_drag_coefficient}"
     rolling_moment_coefficient="${rolling_moment_coefficient}"
-    mesh="iris_prop"
-    use_own_mesh="false"
+    mesh="package://rotors_description/meshes/iris_prop_ccw.dae"
+    use_own_mesh="true"
     color="Blue">
     <origin xyz="${arm_length_front_x} -${arm_length_front_y} ${rotor_offset_top}" rpy="0 0 0" />
     <xacro:insert_block name="rotor_inertia" />
@@ -98,8 +98,8 @@
     motor_number="1"
     rotor_drag_coefficient="${rotor_drag_coefficient}"
     rolling_moment_coefficient="${rolling_moment_coefficient}"
-    mesh="iris_prop"
-    use_own_mesh="false"
+    mesh="package://rotors_description/meshes/iris_prop_ccw.dae"
+    use_own_mesh="true"
     color="DarkGrey">
     <origin xyz="-${arm_length_back_x} ${arm_length_back_y} ${rotor_offset_top}" rpy="0 0 0" />
     <xacro:insert_block name="rotor_inertia" />
@@ -119,8 +119,8 @@
     motor_number="2"
     rotor_drag_coefficient="${rotor_drag_coefficient}"
     rolling_moment_coefficient="${rolling_moment_coefficient}"
-    mesh="iris_prop"
-    use_own_mesh="false"
+    mesh="package://rotors_description/meshes/iris_prop_cw.dae"
+    use_own_mesh="true"
     color="Blue">
     <origin xyz="${arm_length_front_x} ${arm_length_front_y} ${rotor_offset_top}" rpy="0 0 0" />
     <xacro:insert_block name="rotor_inertia" />
@@ -140,8 +140,8 @@
     motor_number="3"
     rotor_drag_coefficient="${rotor_drag_coefficient}"
     rolling_moment_coefficient="${rolling_moment_coefficient}"
-    mesh="iris_prop"
-    use_own_mesh="false"
+    mesh="package://rotors_description/meshes/iris_prop_cw.dae"
+    use_own_mesh="true"
     color="DarkGrey">
     <origin xyz="-${arm_length_back_x} -${arm_length_back_y} ${rotor_offset_top}" rpy="0 0 0" />
     <xacro:insert_block name="rotor_inertia" />
