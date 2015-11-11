@@ -60,7 +60,7 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
   // Subscriber to IMU sensor_msgs::Imu Message.
   imu_sub_ = node_handle_->subscribe(imu_sub_topic_, 10, &GazeboMavlinkInterface::ImuCallback, this);
   
-  motor_velocity_reference_pub_ = node_handle_->advertise<mav_msgs::CommandMotorSpeed>(motor_velocity_reference_pub_topic_, 10);
+  motor_velocity_reference_pub_ = node_handle_->advertise<mav_msgs::Actuators>(motor_velocity_reference_pub_topic_, 10);
   hil_sensor_pub_ = node_handle_->advertise<mavros_msgs::Mavlink>(hil_sensor_mavlink_pub_topic_, 10);
 
   _rotor_count = 4;
@@ -77,16 +77,17 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
 
 // This gets called by the world update start event.
 void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo& /*_info*/) {
-  gzerr << "[gazebo_mavlink_interface] Please specify a robotNamespace.\n";
-  if(!received_first_referenc_)
+
+  if(!received_first_referenc_) 
     return;
+
 
   common::Time now = world_->GetSimTime();
 
-  mav_msgs::CommandMotorSpeedPtr turning_velocities_msg(new mav_msgs::CommandMotorSpeed);
+  mav_msgs::ActuatorsPtr turning_velocities_msg(new mav_msgs::Actuators);
 
   for (int i = 0; i < input_reference_.size(); i++)
-  turning_velocities_msg->motor_speed.push_back(input_reference_[i]);
+  turning_velocities_msg->angular_velocities.push_back(input_reference_[i]);
   turning_velocities_msg->header.stamp.sec = now.sec;
   turning_velocities_msg->header.stamp.nsec = now.nsec;
 
@@ -144,10 +145,10 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo& /*_info*/) {
   }
 }
 
-void GazeboMavlinkInterface::CommandMotorMavros(const mav_msgs::CommandMotorSpeedPtr& input_reference_msg) {
-  input_reference_.resize(input_reference_msg->motor_speed.size());
-  for (int i = 0; i < input_reference_msg->motor_speed.size(); ++i) {
-    input_reference_[i] = input_reference_msg->motor_speed[i];
+void GazeboMavlinkInterface::CommandMotorMavros(const mav_msgs::ActuatorsPtr& input_reference_msg) {
+  input_reference_.resize(input_reference_msg->angular_velocities.size());
+  for (int i = 0; i < input_reference_msg->angular_velocities.size(); ++i) {
+    input_reference_[i] = input_reference_msg->angular_velocities[i];
   }
   received_first_referenc_ = true;
 }
@@ -176,10 +177,10 @@ void GazeboMavlinkInterface::MavlinkControlCallback(const mavros_msgs::Mavlink::
     double scaling = 150;
     double offset = 600;
 
-    mav_msgs::CommandMotorSpeedPtr turning_velocities_msg(new mav_msgs::CommandMotorSpeed);
+    mav_msgs::ActuatorsPtr turning_velocities_msg(new mav_msgs::Actuators);
 
     for (int i = 0; i < _rotor_count; i++) {
-      turning_velocities_msg->motor_speed.push_back(inputs.control[i] * scaling + offset);
+      turning_velocities_msg->angular_velocities.push_back(inputs.control[i] * scaling + offset);
     }
 
     CommandMotorMavros(turning_velocities_msg);
