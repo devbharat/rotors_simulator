@@ -372,7 +372,7 @@ void GazeboBagPlugin::LogWrenches(const common::Time now) {
   for (int i = 0; i < contact_mgr_->GetContactCount(); ++i) {
     std::string collision2_name =
         contacts[i]->collision2->GetLink()->GetScopedName();
-#if GAZEBO_MAJOR_VERSION >= 7
+#if GAZEBO_MAJOR_VERSION >= 8
     double body1_force = contacts[i]->wrench->body1Force.Length();
 #else
     double body1_force = contacts[i]->wrench->body1Force.GetLength();
@@ -388,7 +388,7 @@ void GazeboBagPlugin::LogWrenches(const common::Time now) {
     wrench_msg.header.frame_id = collision1_name + "--" + collision2_name;
     wrench_msg.header.stamp.sec = now.sec;
     wrench_msg.header.stamp.nsec = now.nsec;
-#if GAZEBO_MAJOR_VERSION >= 7
+#if GAZEBO_MAJOR_VERSION >= 8
     wrench_msg.wrench.force.x = contacts[i]->wrench->body1Force.X();
     wrench_msg.wrench.force.y = contacts[i]->wrench->body1Force.Y();
     wrench_msg.wrench.force.z = contacts[i]->wrench->body1Force.Z();
