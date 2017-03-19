@@ -310,19 +310,12 @@ if (BUILD_MAVLINK_INTERFACE_PLUGIN)
   else()
   
     message(STATUS "MAVLINK_HEADER_DIR not provided, falling back to looking at default paths...")
-    # If ROS indigo is installed, we should be able to find them at the path below
-    if(EXISTS /opt/ros/indigo/include/mavlink/v1.0/)
+    # If ROS kinetic is installed, we should be able to find them at the path below
+    if(EXISTS /opt/ros/kinetic/include/mavlink/v1.0/)
       message(STATUS "Found MAVLink headers at '/opt/ros/kinetic/include/mavlink/v1.0/'.")
-      include_directories("/opt/ros/indigo/include/mavlink/v1.0/")
+      include_directories("/opt/ros/kinetic/include/mavlink/v1.0/")
       set(MAVLINK_HEADERS_FOUND TRUE)
     endif()
-
-    if(EXISTS /home/bharat/Documents/old_ubuntu/Everything_wingtra/new_catkin_ws/src/rotors_simulator/rotors_gazebo_plugins/include/mavlink/v1.0/)
-      message(STATUS "Found MAVLink headers at '/home/bharat/Documents/old_ubuntu/Everything_wingtra/new_catkin_ws/src/rotors_simulator/rotors_gazebo_plugins/include/mavlink/v1.0/'.")
-      include_directories("/home/bharat/Documents/old_ubuntu/Everything_wingtra/new_catkin_ws/src/rotors_simulator/rotors_gazebo_plugins/include/mavlink/v1.0/")
-      set(MAVLINK_HEADERS_FOUND TRUE)
-    endif()
-
     
   endif()
   
